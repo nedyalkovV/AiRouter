@@ -4,7 +4,6 @@ var AiRouter = (function(app) {
 
     'use strict';
     var _routes;
-    var curent_route = decodeURI(location.pathname + location.search);
 
     const validation_messages = {
         path_and_options_requirement: 'Path and Options are required paramethers. (Please see documentation)',
@@ -14,12 +13,6 @@ var AiRouter = (function(app) {
 
     function AiRouter() {
         _routes = [];
-        // window.on('hashchange', function() {
-        //   console.log(1);
-        // });
-        window.addEventListener("hashchange", function() {
-            curent_route = decodeURI(location.pathname + location.search);
-        });
     }
 
     AiRouter.prototype.route = function (path, options) {
@@ -40,6 +33,10 @@ var AiRouter = (function(app) {
 
     };
 
+    AiRouter.prototype.go = function (path) {
+        window.location.href = path;
+    };
+
     function cheackOptions(options) {
         for(var key in options) {
             if ((key !== 'name') && (key !== 'action') && (key !== 'beforeAction') && (key !== 'afterAction')) {
@@ -50,8 +47,3 @@ var AiRouter = (function(app) {
 
     return new AiRouter();
 }({}));
-
-
-AiRouter.route('/app/handlers',{
-    name:'tets'
-});
