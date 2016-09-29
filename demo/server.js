@@ -6,20 +6,7 @@ var express = require('express');
 var app = express();
 const PORT = 8080;
 
-// function handleRequest(request, response){
-//     fs.readFile('demo/index.html', function (err, html) {
-//         if (err) {
-//             throw err;
-//         }
-//         response.writeHeader(200, {"Content-Type": "text/html"});
-//         response.write(html);
-//         response.end();
-//     });
-// }
-app.set("view options", {layout: false});
-app.all('*', function(req, res){
-    
-});
+app.use('/demo', express.static(__dirname + '/demo'));
 
 //Lets start our server
 app.listen(PORT, function(){
