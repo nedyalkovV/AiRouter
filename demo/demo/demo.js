@@ -2,10 +2,20 @@
 
 AiRouter.route('/projects/:projectId/settings/:cardId',{
     name:'Login page',
-    action:function(sad) {
-        console.log(sad);
+    action:function(params, query) {
+        console.log(params.projectId);
+        console.log(query);
     },
-    afterAction:function() {
-        console.log(1);
-    }
+});
+
+AiRouter.route('/projects1/:samkaID/settings/:cardId',{
+    name:'Login page',
+    action:function(params, query) {
+        console.log(params.samkaID);
+        console.log(query);
+    },
+});
+
+AiRouter.group({
+    prefix:'/projects'
 });

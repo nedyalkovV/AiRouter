@@ -6,7 +6,7 @@ var express = require('express');
 var app = express();
 const PORT = 8080;
 
-app.use('/demo', express.static(__dirname + '/demo'));
+app.use('/demo', express.static(__dirname + '/demo/'));
 
 //Lets start our server
 app.listen(PORT, function(){

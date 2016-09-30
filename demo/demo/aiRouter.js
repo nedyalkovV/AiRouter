@@ -7,17 +7,19 @@ var AiRouter = (function(app) {
         path_and_options_requirement: 'AiRouter: Path and Options are required paramethers. (Please see documentation)',
         options_object_requirement: 'AiRouter: Options paramether should be object. (Please see documentation)',
         options_not_match_requestments: 'AiRouter: Options does not match requirements. (Please see documentation)',
-        not_roted_paths: 'AiRouter: No Routes Found'
+        not_roted_paths: 'AiRouter: No Routes Found. (Please see documentation)',
+        group_options_requierments:'AiRouter: Group options should have property prefix. (Please see documentation)'
     };
 
     var _mode = null;
     var _routes;
     var _current_route = null;
-    var _not_routed_paths = function() {
-        throw new Error(validation_messages.not_roted_paths);
+    var _not_routed_paths = {
+        action:()=>{
+            throw new Error(validation_messages.not_roted_paths);
+        }
     };
-
-
+    var _groups;
 
     function AiRouter() {
         _routes = [];
@@ -51,6 +53,15 @@ var AiRouter = (function(app) {
         window.location.href = path;
     };
 
+    AiRouter.prototype.notFound = function (options) {
+        cheackOptions(options);
+        _not_routed_paths = options;
+    };
+
+    AiRouter.prototype.group = function (options) {
+        checkGroupOptions(options);
+    };
+
     function checkForRoute() {
         var current_params = _current_route.split('/');
         var isMatch = false;
@@ -79,16 +90,38 @@ var AiRouter = (function(app) {
         }
 
         if (!isMatch) {
-            _not_routed_paths();
+            _not_routed_paths.beforeAction ? _not_routed_paths.beforeAction() : {};
+            _not_routed_paths.action ? _not_routed_paths.action() : {};
+            _not_routed_paths.afterAction ? _not_routed_paths.afterAction() : {};
         }else{
             exectuteRouteActions(route);
         }
     }
 
     function exectuteRouteActions(route) {
-        route.beforeAction ? route.beforeAction() : {};
-        route.action ? route.action('bambi') : {};
-        route.afterAction ? route.afterAction() : {};
+        var params = parseParams(route);
+        var query = getRoute();
+        route.beforeAction ? route.beforeAction(params, query) : {};
+        route.action ? route.action(params, query) : {};
+        route.afterAction ? route.afterAction(params, query) : {};
+    }
+
+    function parseParams(route) {
+        var roted_path = route.path.split('/');
+        var params = {};
+        var temp = [];
+        for (var i = 0; i < roted_path.length; i++) {
+            if (roted_path[i][0]===':') {
+                temp.push({
+                    index:i,
+                    name:roted_path[i].slice(1,roted_path[i].length)
+                });
+            }
+        }
+        for (var z = 0; z < temp.length; z++) {
+            params[temp[z].name] = getRoute().split('/')[temp[z].index];
+        }
+        return params;
     }
 
     function getRoute() {
@@ -122,6 +155,23 @@ var AiRouter = (function(app) {
     function cheackOptions(options) {
         for(var key in options) {
             if ((key !== 'name') && (key !== 'action') && (key !== 'beforeAction') && (key !== 'afterAction')) {
+                throw new Error(validation_messages.options_not_match_requestments);
+            }
+        }
+    }
+
+    function checkGroupOptions(options) {
+        if (!options) {
+            throw new Error('AiRouter: Options is required. (Please see documentation)');
+        }
+        if (typeof(options) !== 'object') {
+            throw new Error(validation_messages.options_object_requirement);
+        }
+        if (!options.hasOwnProperty('prefix')) {
+            throw new Error(validation_messages.group_options_requierments);
+        }
+        for(var key in options) {
+            if ((key !== 'name') && (key!== 'prefix')) {
                 throw new Error(validation_messages.options_not_match_requestments);
             }
         }
