@@ -5,10 +5,12 @@ var AiRouter = (function(app) {
 
     const validation_messages = {
         path_and_options_requirement: 'AiRouter: Path and Options are required paramethers. (Please see documentation)',
-        options_object_requirement: 'AiRouter: Options paramether should be object. (Please see documentation)',
+        prefix_and_options_requirement:'AiRouter: Prefix and Options are required paramethers. (Please see documentation)',
+        option_requierment:'AiRouter: Options is required. (Please see documentation)',
+        options_object_requirement: 'AiRouter: Options paramether must be Object. (Please see documentation)',
         options_not_match_requestments: 'AiRouter: Options does not match requirements. (Please see documentation)',
         not_roted_paths: 'AiRouter: No Routes Found. (Please see documentation)',
-        group_options_requierments:'AiRouter: Group options should have property prefix. (Please see documentation)'
+        path_or_prefix_requirement:'AiRouter: Path and Prefix must be Sting. (Please see documentation)'
     };
 
     var _mode = null;
@@ -23,18 +25,16 @@ var AiRouter = (function(app) {
 
     function AiRouter() {
         _routes = [];
+        _groups = [];
         listener();
     }
 
     AiRouter.prototype.route = function (path, options) {
+        //VALIDATIONS
         if (!path || !options) {
             throw new Error(validation_messages.path_and_options_requirement);
         }
-
-        if (typeof options !== 'object') {
-            throw new Error(validation_messages.options_object_requirement);
-        }
-
+        checkPrefixOrPath(path);
         cheackOptions(options);
 
         _routes.push({
@@ -58,14 +58,28 @@ var AiRouter = (function(app) {
         _not_routed_paths = options;
     };
 
-    AiRouter.prototype.group = function (options) {
-        checkGroupOptions(options);
+    AiRouter.prototype.group = function (prefix, options) {
+        //VALIDATIONS
+        if (!prefix || !options) {
+            throw new Error(validation_messages.prefix_and_options_requirement);
+        }
+        checkPrefixOrPath(prefix);
+        cheackOptions(options);
+
+        _groups.push({
+            prefix:prefix,
+            beforeAction:options.beforeAction,
+            action:options.action,
+            afterAction:options.afterAction
+        });
     };
 
+    //CHECKERS
     function checkForRoute() {
-        var current_params = _current_route.split('/');
         var isMatch = false;
         var route = null;
+
+        var current_params = _current_route.split('/');
 
         for (var x = 0; x < _routes.length; x++) {
 
@@ -90,24 +104,56 @@ var AiRouter = (function(app) {
         }
 
         if (!isMatch) {
-            _not_routed_paths.beforeAction ? _not_routed_paths.beforeAction() : {};
-            _not_routed_paths.action ? _not_routed_paths.action() : {};
-            _not_routed_paths.afterAction ? _not_routed_paths.afterAction() : {};
+            executeNoRoutedPath();
         }else{
+            checkForGoupRoutes(route);
             exectuteRouteActions(route);
         }
     }
 
+    function checkForGoupRoutes(route) {
+        var roted_path = route.path;
+        var group = null;
+        for (var i = 0; i < _groups.length; i++) {
+            if (_groups[i].prefix.length<=roted_path.length) {
+                var temp = roted_path.slice(0,_groups[i].prefix.length);
+                if (temp === _groups[i].prefix) {
+                    group = _groups[i];
+                    break;
+                }
+            }
+        }
+        if (group) {
+            executeGroupActions(group);
+        }
+    }
+
+    //EXECUTORS
     function exectuteRouteActions(route) {
-        var params = parseParams(route);
+        var params = parseParams(route.path);
         var query = getRoute();
         route.beforeAction ? route.beforeAction(params, query) : {};
         route.action ? route.action(params, query) : {};
         route.afterAction ? route.afterAction(params, query) : {};
     }
 
+    function executeGroupActions(group) {
+        var params = parseParams(group.prefix);
+        var query = getRoute();
+        group.beforeAction ? group.beforeAction(params, query) : {};
+        group.action ? group.action(params, query) : {};
+        group.afterAction ? group.afterAction(params, query) : {};
+    }
+
+    function executeNoRoutedPath() {
+        _not_routed_paths.beforeAction ? _not_routed_paths.beforeAction() : {};
+        _not_routed_paths.action ? _not_routed_paths.action() : {};
+        _not_routed_paths.afterAction ? _not_routed_paths.afterAction() : {};
+    }
+
+    //PARSERS
     function parseParams(route) {
-        var roted_path = route.path.split('/');
+        var roted_path = route.split('/');
         var params = {};
         var temp = [];
         for (var i = 0; i < roted_path.length; i++) {
@@ -124,6 +170,7 @@ var AiRouter = (function(app) {
         return params;
     }
 
+    //BROWSER PATH PARAMS FINDER
     function getRoute() {
         var fragment = '';
         if(_mode === 'history') {
@@ -135,6 +182,7 @@ var AiRouter = (function(app) {
         return fragment;
     }
 
+    //LISTENER
     function listener() {
         var self = {};
         var current = _current_route;
@@ -152,7 +200,11 @@ var AiRouter = (function(app) {
         return current;
     }
 
+    //VALIDATION METHODS
     function cheackOptions(options) {
+        if (typeof options !== 'object') {
+            throw new Error(validation_messages.options_object_requirement);
+        }
         for(var key in options) {
             if ((key !== 'name') && (key !== 'action') && (key !== 'beforeAction') && (key !== 'afterAction')) {
                 throw new Error(validation_messages.options_not_match_requestments);
@@ -160,20 +212,9 @@ var AiRouter = (function(app) {
         }
     }
 
-    function checkGroupOptions(options) {
-        if (!options) {
-            throw new Error('AiRouter: Options is required. (Please see documentation)');
-        }
-        if (typeof(options) !== 'object') {
-            throw new Error(validation_messages.options_object_requirement);
-        }
-        if (!options.hasOwnProperty('prefix')) {
-            throw new Error(validation_messages.group_options_requierments);
-        }
-        for(var key in options) {
-            if ((key !== 'name') && (key!== 'prefix')) {
-                throw new Error(validation_messages.options_not_match_requestments);
-            }
+    function checkPrefixOrPath(param) {
+        if (typeof(param) !== 'string') {
+            throw new Error(validation_messages.path_or_prefix_requirement);
         }
     }
 
