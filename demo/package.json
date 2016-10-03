@@ -18,9 +18,14 @@
   "dependencies": {
     "chai": "^3.5.0",
     "express": "^4.14.0",
+<<<<<<< HEAD
     "fs": "0.0.1-security"
   },
   "devDependencies": {
     "mocha": "^3.1.0"
+=======
+    "fs": "0.0.1-security",
+    "jquery": "^3.1.1"
+>>>>>>> ebbf0b23f0698b0805b3ef3f7d08467084db78f3
   }
 }
