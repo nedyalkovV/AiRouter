@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.14.0",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "jquery": "^3.1.1"
   }
 }

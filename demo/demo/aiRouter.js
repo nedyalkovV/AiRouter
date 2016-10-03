@@ -22,6 +22,7 @@ var AiRouter = (function(app) {
         }
     };
     var _groups;
+    var _current_params;
 
     function AiRouter() {
         _routes = [];
@@ -89,7 +90,7 @@ var AiRouter = (function(app) {
                 var isParamsMatch = true;
                 for (var i = 0; i < current_params.length; i++) {
                     if (routed_params[i][0] !== ':') {
-                        if (routed_params[i] !== current_params[i]) {
+                        if (routed_params[i] !== current_params[i].toLowerCase()) {
                             isParamsMatch = false;
                             break;
                         }
