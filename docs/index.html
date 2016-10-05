@@ -9,7 +9,7 @@
         <script src="libs/js/jquery-3.1.1.min.js"></script>
         <script src="libs/js/uikit.min.js"></script>
     </head>
-    <body>
+    <body id='body'>
         <header class="header">
             <div id="wrapper">
                 <div class="header-content">
@@ -442,7 +442,7 @@ router.go('/home');
 
         </main>
         <div id='wrapper'>
-            <div class="contacts">
+            <div class="contacts" id='contacts'>
                 <h2>Contact Me:</h2>
                 <div class="uk-grid">
                     <div class="uk-width-2-3">
@@ -486,7 +486,13 @@ router.go('/home');
         </div>
 
         <div id="my-id" class="uk-offcanvas">
-            <div class="uk-offcanvas-bar">...</div>
+            <div class="uk-offcanvas-bar">
+                <ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon">
+                    <li><a href="#body" data-uk-smooth-scroll>Home</a></li>
+                    <li><a href="#docs-h" data-uk-smooth-scroll>API Documentation</a></li>
+                    <li><a href="#contacts" data-uk-smooth-scroll>Contacts</a></li>
+                </ul>
+            </div>
         </div>
     </body>
 </html>
