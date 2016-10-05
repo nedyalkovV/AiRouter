@@ -83,7 +83,7 @@
 .docs{
     padding: 30px 0px;
     background-color: #F5F5F5;
-    min-height: 700px;
+    min-height: 500px;
 }
 .docs .left{
     margin: 10px 0;
@@ -100,4 +100,87 @@
 }
 .docs .right ul li{
     margin-bottom: 10px;
+}
+#download_modal h4{
+    margin: 0;
+}
+.uk-placeholder{
+    border: 1px solid silver;
+    width: 90%;
+    margin: 20px 0;
+}
+.uk-placeholder header{
+    background-color:#F8F8F8;
+    padding: 20px;
+}
+.uk-placeholder main{
+    background-color: white;
+    padding: 20px;
+}
+.green{
+    color: green;
+}
+.blue{
+    color: blue;
+}
+.yellow{
+    color: orange;
+}
+.red{
+    color: red;
+}
+.silver{
+    color: silver;
+}
+.arguments{
+    font-size: 16px;
+    color: silver;
+    font-family: monospace;
+    margin: 15px 0;
+}
+.typer{
+    padding: 0px 30px;
+    float: right;
+}
+.uk-placeholder p{
+    margin: 0;
+}
+.args{
+    margin: 5px 0;
+}
+.example{
+    overflow-y: auto;
+}
+.xmp{
+    padding: 0;
+}
+.foot{
+    height: 100px;
+    width: 100%;
+    background-color: #404040;
+}
+.footer-content{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+}
+.footer-content h4{
+    color: #767676;
+    margin: 0;
+}
+.footer-content a{
+    color: white;
+}
+.contacts{
+    padding: 20px 0;
+}
+.email-icon{
+    text-align: right;
+}
+.email-icon i{
+    font-size: 5em;
+    opacity: 0.2;
 }
