@@ -1,0 +1,15 @@
+{
+  "name": "AiRouter",
+  "homepage": "https://nedyalkovv.github.io/AiRouter/",
+  "authors": [
+    "Vasil nedyalkov <nedyalkov_v@yahoo.com>"
+  ],
+  "description": "Modern Front-end Javascript Router",
+  "main": "airouter.js",
+  "keywords": [
+    "Router",
+    "Javascript",
+    "Front-end"
+  ],
+  "license": "MIT"
+}

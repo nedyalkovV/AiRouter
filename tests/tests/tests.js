@@ -2,7 +2,7 @@
 
 var expect = chai;
 
-var router = new AiRouter();
+var router = new AiRouter(null);
 
 describe("Basic", function() {
 
